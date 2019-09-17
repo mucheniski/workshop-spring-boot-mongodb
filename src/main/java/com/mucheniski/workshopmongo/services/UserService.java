@@ -3,6 +3,7 @@ package com.mucheniski.workshopmongo.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,12 @@ public class UserService {
 	public void deleteById(String id) {
 		findById(id);
 		userRepository.deleteById(id);
+	}
+	
+	public User update(String id, User updatedUser) {
+		User actualUser = findById(id);
+		BeanUtils.copyProperties(updatedUser, actualUser, "id");
+		return userRepository.save(actualUser);
 	}
 	
 	public User fromDTO(UserDTO userDTO) {
