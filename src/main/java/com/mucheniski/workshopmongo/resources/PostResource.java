@@ -1,5 +1,6 @@
 package com.mucheniski.workshopmongo.resources;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,26 @@ public class PostResource {
 		text = URL.decoreParam(text);
 		List<Post> posts = postService.findByTitleContainingIgnoreCase(text);		
 		return ResponseEntity.ok().body(posts);
+	}
+	
+	@GetMapping(value="/findbytitleQuery")
+	public ResponseEntity <List<Post>> findByTitleWhitQuery(@RequestParam(value="text", defaultValue="") String text) {			
+		text = URL.decoreParam(text);		
+		List<Post> list = postService.findByTitle(text);		 
+		return ResponseEntity.ok().body(list);
+	}
+	
+	@GetMapping(value="/fullSearch")
+	public ResponseEntity <List<Post>> fullSearch(
+			@RequestParam(value="text", defaultValue="") String text,
+			@RequestParam(value="minDate", defaultValue="1986-12-27T00:00:00Z") String minDate,
+			@RequestParam(value="maxDate", defaultValue="1986-12-27T00:00:00Z") String maxDate
+			) {			
+		text = URL.decoreParam(text);		
+		Instant min = Instant.parse(minDate);
+		Instant max = Instant.parse(minDate);
+		List<Post> list = postService.fullSearch(text, min, max);	
+		return ResponseEntity.ok().body(list);
 	}
 	
 }
